@@ -13,7 +13,7 @@ function writeCode(prefix, code, fn) {
                 fn.call()
             }
         }
-    }, 50)
+    }, 20)
 }
 
 function writeMd(md, fn) {
@@ -29,7 +29,26 @@ function writeMd(md, fn) {
                 fn.call()
             }
         }
-    }, 50)
+    }, 70)
+}
+
+function mdToHtml(md) {
+    var converter = new showdown.Converter()
+    var mdhtml = converter.makeHtml(md)
+    let domPaper = document.querySelector('#paper > #content')
+    domPaper.innerHTML = mdhtml
+}
+
+function createPaper(fn) {
+    var paper = document.createElement('div')
+    paper.id = 'paper'
+    var content = document.createElement('pre')
+    content.id = 'content'
+    paper.appendChild(content)
+    document.body.appendChild(paper)
+    if (fn) {
+        fn.call()
+    }
 }
 
 
@@ -105,7 +124,7 @@ html {
     left: 0;
     width: 50%;
     height: 100%;
-    overflow: hidden
+    overflow: auto
 }
 
 /*3D效果来一波～*/
@@ -131,36 +150,22 @@ html {
     height: 100%;
     width: 100%;
     background-color: white;
-    overflow: hidden;
+    overflow: auto;
 }
 `
 var result2 =
-`
+    `
 /*下面我用markdown来自我介绍*/
 
 `
 
-var converter = new showdown.Converter();
-var html = converter.makeHtml(md);
+
 writeCode('', result, () => {
     createPaper(
         () => {
             writeCode(result, result2, () => {
-                writeMd(html)
+                writeMd(md, ()=>{mdToHtml(md)})
             })
         }
     )
 })
-
-
-
-
-function createPaper(fn) {
-    var paper = document.createElement('div')
-    paper.id = 'paper'
-    var content = document.createElement('pre')
-    content.id = 'content'
-    paper.appendChild(content)
-    document.body.appendChild(paper)
-    fn.call()
-}
